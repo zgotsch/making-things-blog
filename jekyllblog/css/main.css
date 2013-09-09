@@ -11,7 +11,7 @@ body {
   background-color: white;
 }
 
-h1, h2 {
+h1, h2, h3 {
   font-family: freight-sans-pro, 'Myriad Pro', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
   color: #333;
 }
@@ -19,6 +19,23 @@ h1, h2 {
 h1 {
   font-size: 52px;
   margin-top: 0;
+}
+
+#blog-title {
+  margin-bottom: 0;
+}
+
+#blog-description {
+  margin-top: -6px;
+  margin-bottom: 0;
+  color: #777;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.article-title {
+  margin-top: 35px;
+  margin-bottom: 0;
 }
 
 .article-body {

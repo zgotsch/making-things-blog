@@ -16,6 +16,12 @@
   <body>
     <div id="wrapper">
       <h1 id="blog-title">{{ site.name }}</h1>
+      {% if page.no_blog_description %}
+      {% else %}
+        <h3 id="blog-description">
+          A blog about making things, mostly software.
+        </h3>
+      {% endif %}
       {{ content }}
     </div>
   </body>
