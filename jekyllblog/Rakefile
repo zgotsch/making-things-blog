@@ -1,0 +1,69 @@
+posts_dir = '_posts'
+new_post_extn = '.markdown'
+
+ssh_port = 22
+ssh_user = 'zach'
+remote_url = "learningvirus.com"
+remote_location = '/home/zach/_site'
+local_location = '_site'
+
+task :default => [:build]
+
+desc 'Build the site (`jekll build`). This is the default action.'
+task :build do
+  system('jekyll build')
+end
+
+desc 'Create a new post.'
+task :new_post, :title do |t, args|
+  if args.title
+    title = args.title
+  else
+    title = get_stdin("Enter a title for your post: ")
+  end
+  filename = "#{Time.now.strftime('%Y-%m-%d')}-#{title.to_url}.#{new_post_extn}"
+  full_filename = File.join(posts_dir, filename)
+
+  if File.exist? full_filename
+    abort("rake aborted!") if ask("#{full_filename} alredy exists. Do you wish"\
+                                  " to overwrite?", ['y', 'n']) == n
+  end
+
+  puts "Creating new post: #{full_filename}"
+  open(full_filename, 'w') do |post|
+    post.puts "---"
+    post.puts "layout: post"
+    post.puts "title: \"#{title.gsub(/&/,'&amp;')}\""
+    post.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M')}"
+    post.puts "categories: "
+    post.puts "---"
+  end
+end
+
+desc 'Deploy to learningvirus.com'
+task :deploy do
+  puts "Deploying via rsync"
+  ok_failed system("rsync -acze 'ssh -p #{ssh_port}' --delete #{local_location}/ #{ssh_user}@#{remote_url}:#{remote_location}")
+end
+
+def ok_failed(condition)
+  if (condition)
+    puts "OK"
+  else
+    puts "FAILED"
+  end
+end
+
+def get_stdin(message)
+  print message
+  STDIN.gets.chomp
+end
+
+def ask(message, valid_options)
+  if valid_options
+    answer = get_stdin("#{message} #{valid_options.to_s.gsub(/"/, '').gsub(/, /,'/')} ") while !valid_options.include?(answer)
+  else
+    answer = get_stdin(message)
+  end
+  answer
+end
